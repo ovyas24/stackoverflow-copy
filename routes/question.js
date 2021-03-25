@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const Question  = require("../model/questons")
-const { allQuestions } = require("../controllers/question")
+const { allQuestions, addQuestion, singleQuestion, addAnswer, addComment, deleteQuestions } = require("../controllers/question")
 
 router.get('/', allQuestions)
-
-router.post("/",(req,res)=>{
-    res.send("")
-})
+router.get('/:id', singleQuestion)
+router.get('/delete/:id', deleteQuestions)
+router.post("/", addQuestion )
+router.post("/answer/:id",addAnswer)
+router.put("/comment/:id", addComment)
 
 module.exports = router
