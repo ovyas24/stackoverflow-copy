@@ -9,6 +9,7 @@ const questionsSchema = new Schema({
     answers: [],
     answerd:{ type:Boolean, default:false},
     date:{type:Date, default:Date.now},
+    tags:Array,
     views:Number
 })
 const Question = mongoose.model("Question", questionsSchema)

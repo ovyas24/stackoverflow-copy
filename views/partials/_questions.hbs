@@ -1,0 +1,20 @@
+{{#each questions}}
+<div class="card mb-2">
+    <div class="card-header">
+        {{this.title}}
+    </div>
+    <div class="card-body">
+        <blockquote class="blockquote mb-0">
+            <p>{{this.subtitle}}</p>
+            <footer class="blockquote-footer">
+                {{this.by}}
+                |
+                <cite title="Source Title">{{this.newDate.day}}-{{this.newDate.month}}-{{this.newDate.year}}</cite>
+            </footer>
+        </blockquote>
+    </div>
+    <div class="card-footer text-muted text-left">
+        Somthing here to filler
+    </div>
+</div>
+{{/each}}

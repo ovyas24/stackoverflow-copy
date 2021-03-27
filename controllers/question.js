@@ -10,9 +10,14 @@ exports.allQuestions = async (req, res) => {
                 let filteredQuestion = []
                 questions.forEach((question) => {
                         const { _id, title, subtitle, by, date, answerd, userid, answers } = question
-                        filteredQuestion.push({ _id, title, subtitle, by, date, answerd, userid, answers })
+                        const newDate = {
+                                day: date.getDate(),
+                                month: date.getMonth() + 1,
+                                year: date.getFullYear(),
+                        }
+                        filteredQuestion.push({ _id, title, subtitle, by, newDate, answerd, userid, answers })
                 })
-                res.json(filteredQuestion)
+                res.render('index', { title:'Home', questions:filteredQuestion, user:req.user})
         } catch (error) {
                 res.status(500).json({err:"internal server error"})
         }
