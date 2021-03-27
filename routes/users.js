@@ -9,7 +9,7 @@ router.post('/login', checkNotAuthenticated, postLogin)
 
 router.get('/register', checkNotAuthenticated, getRegister)
 
-router.post('/register', checkNotAuthenticated, postRegister)
+router.post('/register', checkNotAuthenticated, postRegister , postLogin)
 
 router.get("/logout",(req,res)=>{
     req.logOut()

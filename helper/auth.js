@@ -3,11 +3,10 @@ function checkAuthenticated(req, res, next) {
         return next()
     }
 
-    res.redirect('/login')
+    res.redirect('/users/login')
 }
 
 function checkNotAuthenticated(req, res, next) {
-    console.log("cheking");
     if (req.isAuthenticated()) {
         return res.redirect('/')
     }

@@ -16,8 +16,7 @@ exports.getRegister =  (req, res) => {
     res.render('register',{layout:'auth'})
 }
 
-exports.postRegister = async (req, res) => {
-    console.log(req.body);
+exports.postRegister = async (req, res, next) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         const newUser = new User({
@@ -25,10 +24,16 @@ exports.postRegister = async (req, res) => {
             email: req.body.email,
             password: hashedPassword
         })
-        console.log("user", newUser._id);
         const a = await newUser.save()
-        res.redirect('/users/login')
-    } catch {
-        res.redirect('/users/register')
+        next()
+    } catch(error) {
+        console.log(error.code); //11000 for dupplicate email
+        if(error.code == 11000) {
+            req.flash("message","Email Already Registerd")
+            res.redirect('/users/register')
+        }else{
+            req.flash("message","Internal Error Try Again")
+            res.redirect('/users/register')
+        }
     }
 }
