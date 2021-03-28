@@ -6,7 +6,7 @@ const questionsSchema = new Schema({
     by:String,
     userid:String,
     subtitle:{ type:String, default:null},
-    answers: [],
+    answers: [{type:Schema.ObjectId, ref:'Answer'}],
     answerd:{ type:Boolean, default:false},
     date:{type:Date, default:Date.now},
     tags:Array,

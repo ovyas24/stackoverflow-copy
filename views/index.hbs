@@ -1,75 +1,8 @@
 {{> _hero}}
+{{> _addQuestion}}
 <hr>
-<div class="conatiner d-flex justify-content-center">
-    <div class="row ">
-        <div class="col-4">
-            <div class=" d-flexflex-column p-3 bg-light" style="width: 280px;">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                    <svg class="bi me-2" width="40" height="32">
-                        <use xlink:href="#bootstrap" />
-                    </svg>
-                    <span class="fs-4">Feature</span>
-                </a>
-                <hr>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li>
-                        <a href="#" class="nav-link link-dark">
-                            <svg class="bi me-2" width="16" height="16">
-                                <use xlink:href="#speedometer2" />
-                            </svg>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-dark">
-                            <svg class="bi me-2" width="16" height="16">
-                                <use xlink:href="#table" />
-                            </svg>
-                            Orders
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-dark">
-                            <svg class="bi me-2" width="16" height="16">
-                                <use xlink:href="#grid" />
-                            </svg>
-                            Products
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-dark">
-                            <svg class="bi me-2" width="16" height="16">
-                                <use xlink:href="#people-circle" />
-                            </svg>
-                            Customers
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-8">
-            {{#each questions}}
-            <div class="card mb-2">
-                <div class="card-header">
-                    {{this.title}}
-                </div>
-                {{this._id}}
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <p>{{this.subtitle}}</p>
-                        <footer class="blockquote-footer">
-                            {{this.by}}
-                            |
-                            <cite
-                                title="Source Title">{{this.newDate.day}}-{{this.newDate.month}}-{{this.newDate.year}}</cite>
-                        </footer>
-                    </blockquote>
-                </div>
-                <div class="card-footer text-muted text-left">
-                    Somthing here to filler
-                </div>
-            </div>
-            {{/each}}
-        </div>
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-8 col-md-12" id="all">
+        {{!-- {{> _questions}} --}}
     </div>
 </div>

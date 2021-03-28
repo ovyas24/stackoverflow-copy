@@ -1,11 +1,10 @@
 {{#each questions}}
-<div class="card mb-2">
-    <div class="card-header">
-        {{this.title}}
-    </div>
+<div class="card mb-2 col-12" key="{{this._id}}">
     <div class="card-body">
+        <h5 class="card-title">Q : {{this.title}}</h5>
+        <p class="card-text">{{this.subtitle}}</p>
         <blockquote class="blockquote mb-0">
-            <p>{{this.subtitle}}</p>
+            <p></p>
             <footer class="blockquote-footer">
                 {{this.by}}
                 |
@@ -14,7 +13,7 @@
         </blockquote>
     </div>
     <div class="card-footer text-muted text-left">
-        Somthing here to filler
-    </div>
+        Views {{this.views}} | {{#if answered}} <span class="text-success">Answered</span> {{else}} <span class="text-muted">Not Answered</span>{{/if}}
+    </div> 
 </div>
 {{/each}}

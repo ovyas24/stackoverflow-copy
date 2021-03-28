@@ -4,43 +4,6 @@ const Comment = require("../model/comment")
 
 class QuestionHelper {
     constructor() { }
-    async comList(commentList) {
-        const comments = []
-
-        for (let i = 0; i < commentList.length; i++) {
-            const com = await Comment.findById(commentList[i])
-            comments.push(com)
-        }
-
-        return comments
-    }
-
-    async ansList(answerList){
-        const answers = []
-
-        for (let i = 0; i < answerList.length; i++) {
-            const ans = await Answer.findById(answerList[i])
-            const { _id, by, userid, answer, date, likes, dislikes } = ans
-
-            let commentList = ans.comments ? ans.comments : []
-            let comments = await this.comList(commentList)
-
-            const answ = {
-                _id,
-                by,
-                userid,
-                answer,
-                comments,
-                date,
-                totalLike: likes - dislikes
-            }
-
-            answers.push(answ)
-        }
-
-        return answers
-    }
-
     //delete comment
     deleteComment = async (id) => {
         try {
@@ -85,12 +48,25 @@ class QuestionHelper {
                 await this.deleteAnswer(list[i]._id)
             }
 
-            await Question.deleteOne({ _id:id })
+            await Question.deleteOne({ _id: id })
             console.log("break1");
             return true
         } catch (error) {
             return false
         }
+    }
+
+
+    compareTags = (tags, searchTags) => {
+        for (var i = 0; i < tags.length; i++) {
+            for (var j = 0; j < searchTags.length; j++) {
+                if (searchTags[j] == tags[i]) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }
 

@@ -6,6 +6,7 @@ const hbs = require('express-handlebars')
 const path = require("path")
 const flash = require('express-flash')
 const session = require("express-session")
+const cors = require("cors")
 
 const app = express()
 const port = process.env.PORT||3000
@@ -14,6 +15,7 @@ require('./passport/passport-config')(passport);
 
 app.use(morgan('tiny'))
 
+app.use(cors())
 app.use(flash())
 app.use(session({
     secret: 'somesecret',

@@ -7,15 +7,8 @@ const answerScema = new Schema ({
     answer:String,
     correct:{ type: Boolean, default:false},
     date:{type:Date, default:Date.now},
-    comments :[],
-    likes:{
-        count:{type:Number,default:0},
-        userid:{type:String}
-    },
-    dislikes:{
-        count:{type:Number,default:0},
-        userid:{type:String}
-    }
+    comments :[{type:Schema.ObjectId,ref:'Comment'}],
+    likes:[{type:Schema.ObjectId,ref:'User'}]
 })
 
 module.exports = mongoose.model("Answer", answerScema)
