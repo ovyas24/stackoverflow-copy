@@ -11,4 +11,4 @@ const answerScema = new Schema ({
     likes:[{type:Schema.ObjectId,ref:'User'}]
 })
 
-module.exports = mongoose.model("Answer", answerScema)
+module.exports = mongoose.model("Answer", answerScema) 

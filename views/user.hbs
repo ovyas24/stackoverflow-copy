@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <img src="/Images/profiles/{{user.profile}}" height="200" width="200" alt="Profile">
+        </div>
+        <div class="col-8">
+            <p>
+                Name : {{user.username}}
+                <br>
+            <h2>Stats</h2>
+            Question : {{stats.qcount}}
+            <br>
+            Answers : {{stats.acount}}
+            <br>
+            Correct Answers : {{stats.cacount}}
+            </p>
+            <div class="buttons">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Ask
+                    Edit/Add profile</button>
+            </div>
+        </div>
+        <div class="col-1">
+            <a href="/users/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+</div>
+{{> _avatar}}
+<div class="container mt-4">
+    <h2>All Question Asked by you</h2>
+</div>
+<div class="container mt-4">
+    {{> _questions}}
+</div>

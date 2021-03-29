@@ -4,8 +4,8 @@
                 navigation</span><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navcol-1">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/hot-questions">Hot Questions</a></li>
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/questions/hot">Hot Questions</a></li>
             </ul>
             <form class="me-auto search-form" action="/questions/search/"  target="_self">
                 <div class="d-flex align-items-center"><label class="form-label d-flex mb-0" for="search-field"><i
@@ -14,7 +14,7 @@
             </form>
             <span class="navbar-text actions">
                 {{#if user}}
-                <a href="/user/{{user._id}}">{{user.username}}</a>
+                <a href="/users">{{user.username}}</a>
                 {{else}}
                 <a class="login" href="/users/login">Log In</a>
                 <a class="btn btn-light action-button" role="button" href="/users/register">Sign Up</a>

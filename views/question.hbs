@@ -5,46 +5,144 @@
                 <!-- Start: Intro -->
                 <div class="intro">
                     <h1 class="text-center">{{question.title}}</h1><!-- Start: Date and Author -->
-                    <p class="text-center"><span class="by">by</span> <a href="#">{{question.by}}</a><span
-                            class="date">{{question.date}} {{moment question.date format="YYYY-MM-DD"}} </span></p>
+                    <p class="text-center"><span class="by">by </span class="h2">{{question.by}}<span class="date"> |
+                            {{question.date}} </span></p>
+                    <p class="text-center">
+                        {{#isEqu question.by user.username}}
+                        <a href="/questions/delete/{{question._id}}">Delete Question</a>
+                        {{/isEqu}}
+                    </p>
                     <!-- End: Date and Author -->
                 </div><!-- End: Intro -->
                 <!-- Start: Text -->
                 <div class="text">
-                    <p>{{question.subtitle}}</p>
+                    <p>Description: {{question.subtitle}}</p>
                 </div><!-- End: Text -->
-                <form>
-                    <div class="input-group">
-                        <div class="input-group-prepend"></div><input class="form-control" type="text"
-                            placeholder="Answer...">
-                        <div class="input-group-append"><button class="btn btn-primary" type="button">Answer</button>
-                        </div>
+                <div class="row">
+                    <div class="col-1">
+                        <img src="/Images/profiles/{{user.profile}}" height="40" width="40" alt="p">
                     </div>
-                </form>
+                    <div class="col-11">
+                        <form action="/questions/answer/{{question._id}}" method="POST">
+                            <div class="input-group">
+                                <div class="input-group-prepend"></div><input class="form-control" type="text"
+                                    placeholder="Answer..." name="answer" {{#if user}}{{else}}disabled="true" {{/if}}>
+                                <div class="input-group-append"><button class="btn btn-primary" type="Submit" {{#if
+                                        user}}{{else}}disabled="true" {{/if}} required>Answer</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div class="card mt-2">
                     {{#each question.answers}}
+                    {{#if correct}}
+                    <div class="card-body">
+                        <h4 class="card-title"> <span class="bg-success" style="display:block;border-radius:50px;height: 20px;width:20px"></span> {{by}}</h4>
+                        <h6 class="text-muted card-subtitle mb-2">{{date}}</h6>
+                        <p class="card-text">{{answer}}</p>
+                        {{#if ../user}}
+                        <a class="card-link" href="#">Like</a>
+                        <a class="card-link" href="#">Unlike</a>
+                        {{#isEqu by ../user.username}}
+                        <a class="text-danger" href="/questions/delete-answer/{{_id}}?quesId={{../question._id}}">Delete
+                            Your Answer</a>
+                        {{/isEqu}}
+                        {{/if}}
+
+                        <div class="row">
+                            <div class="col-1">
+                                <img src="/Images/profiles/{{../user.profile}}" height="40" width="40" alt="p">
+                            </div>
+                            <div class="col-11">
+                                <form action="/questions/comment/{{_id}}?quesId={{../question._id}}" method="POST">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend"></div><input class="form-control" type="text"
+                                            placeholder="Comment.." name="comment" {{#if
+                                            ../user}}{{else}}disabled="true" {{/if}} required>
+                                        <div class="input-group-append"><button class="btn btn-primary" type="submit"
+                                                {{#if ../user}}{{else}}disabled="true" {{/if}}>Comment</button></div>
+                                    </div>{{#isEqu by ../user.username}}
+                                    <a class="text-danger"
+                                        href="/questions/delete-answer/{{_id}}?quesId={{../question._id}}">Delete Your
+                                        Answer</a>
+                                    {{/isEqu}}
+                                    {{#isEqu by ../user.username}}
+                                    <a class="text-danger"
+                                        href="/questions/delete-comment/{{_id}}?quesId={{../this._id}}">Delete Your
+                                        Answer</a>
+                                    {{/isEqu}}
+                                </form>
+                            </div>
+
+                            {{#each comments}}
+                            <div class="card-body">
+                                <p class="card-text"> <span class="text-primary">{{by}}</span>~ {{comment}}</p>
+                            </div>
+                            {{/each}}
+                        </div>
+                        
+                    </div>
+                    {{/if}}
+                    {{/each}}
+                </div>
+                <div class="card mt-2">
+                    {{#each question.answers}}
+                    {{#if correct}}
+                    {{else}}
                     <div class="card-body">
                         <h4 class="card-title">{{by}}</h4>
                         <h6 class="text-muted card-subtitle mb-2">{{date}}</h6>
-                        <p class="card-text">{{answer}}</p><a class="card-link" href="#">Like</a><a class="card-link"
-                            href="#">Unlike</a>
-                        <form>
-                            <div class="input-group">
-                                <div class="input-group-prepend"></div><input class="form-control" type="text"
-                                    placeholder="Comment">
-                                <div class="input-group-append"><button class="btn btn-primary"
-                                        type="button">Answer</button></div>
+                        <p class="card-text">{{answer}}</p>
+                        {{#if ../user}}
+                        <a class="card-link" href="#">Like</a>
+                        <a class="card-link" href="#">Unlike</a>
+                        {{#isEqu ../question.by ../user.username}}
+                        <a href="/questions/correct/{{_id}}?quesID={{../question._id}}&userID={{../user._id}}">Choose as
+                            correct answer</a>
+                        {{/isEqu}}
+                        {{#isEqu by ../user.username}}
+                        <a class="text-danger" href="/questions/delete-answer/{{_id}}?quesId={{../question._id}}">Delete
+                            Your Answer</a>
+                        {{/isEqu}}
+                        {{/if}}
+
+                        <div class="row">
+                            <div class="col-1">
+                                <img src="/Images/profiles/{{../user.profile}}" height="40" width="40" alt="p">
                             </div>
-                        </form>
-                        {{#each comments}}
-                        <div class="card-body">
-                            <p class="card-text">{{comment}} ~{{by}}</p>
+                            <div class="col-11">
+                                <form action="/questions/comment/{{_id}}?quesId={{../question._id}}" method="POST">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend"></div><input class="form-control" type="text"
+                                            placeholder="Comment.." name="comment" {{#if
+                                            ../user}}{{else}}disabled="true" {{/if}} required>
+                                        <div class="input-group-append"><button class="btn btn-primary" type="submit"
+                                                {{#if ../user}}{{else}}disabled="true" {{/if}}>Comment</button></div>
+                                    </div>{{#isEqu by ../user.username}}
+                                    <a class="text-danger"
+                                        href="/questions/delete-answer/{{_id}}?quesId={{../question._id}}">Delete Your
+                                        Answer</a>
+                                    {{/isEqu}}
+                                    {{#isEqu by ../user.username}}
+                                    <a class="text-danger"
+                                        href="/questions/delete-comment/{{_id}}?quesId={{../this._id}}">Delete Your
+                                        Answer</a>
+                                    {{/isEqu}}
+                                </form>
+                            </div>
+
+                            {{#each comments}}
+                            <div class="card-body">
+                                <p class="card-text"> <span class="text-primary">{{by}}</span>~ {{comment}}</p>
+                            </div>
+                            {{/each}}
                         </div>
-                        {{/each}}
+                        
                     </div>
+                    {{/if}}
                     {{/each}}
                 </div>
             </div>
         </div>
-    </div>
 </section>

@@ -16,9 +16,33 @@ exports.allQuestions = async (req, res) => {
                                 month: date.getMonth() + 1,
                                 year: date.getFullYear(),
                         }
-                        filteredQuestion.push({ _id, title, subtitle, by, newDate, answerd, userid, ansCount, views, tags })
+                        filteredQuestion.push({ _id, title, subtitle, by, newDate,date, answerd, userid, ansCount, views, tags })
                 })
+                filteredQuestion = filteredQuestion.sort((a, b) => b.date - a.date)
                 res.render('index', { title: 'Home', questions: filteredQuestion, user: req.user })
+                // res.json(filteredQuestion)
+        } catch (error) {
+                res.status(500).json({ err: "internal server error" })
+        }
+};
+
+exports.hot = async (req, res) => {
+        try {
+                const questions = await Question.find({})
+                let filteredQuestion = []
+                questions.forEach((question) => {
+                        const { _id, title, subtitle, by, date, answerd, userid, answers, views, tags } = question
+                        const ansCount = answers.length
+                        const newDate = {
+                                day: date.getDate(),
+                                month: date.getMonth() + 1,
+                                year: date.getFullYear(),
+                        }
+
+                        if(views > 10) filteredQuestion.push({ _id, title, subtitle, by, newDate, answerd, userid, ansCount, views, tags })
+                })
+                filteredQuestion = filteredQuestion.sort((a, b) => b.views - a.views)
+                res.render('hot', { title: 'Hot', questions: filteredQuestion, user: req.user })
                 // res.json(filteredQuestion)
         } catch (error) {
                 res.status(500).json({ err: "internal server error" })
@@ -35,9 +59,9 @@ exports.singleQuestion = async (req, res) => {
                                         path: 'comments',
                                         model: 'Comment'
                                 }
-                        })  
-                const updated = await Question.updateOne({_id:question.id},{views:question.views +1})
-                res.render('question', { title: 'Home | '+question.title, question:question, user: req.user })
+                        })
+                const updated = await Question.updateOne({ _id: question.id }, { views: question.views + 1 })
+                res.render('question', { title: 'Home | ' + question.title, question: question, user: req.user })
         } catch (error) {
                 console.log(error);
                 res.status(500).json({ err: "internal server error" })
@@ -45,44 +69,54 @@ exports.singleQuestion = async (req, res) => {
 };
 
 exports.addQuestion = async (req, res) => {
-        try {
-                const { title, subtitle, tags } = req.body                              
-                const { username, _id } = req.user
-                const tagArray = tags.split(","," ")
-                const newQuestion = new Question({
-                        title,
-                        subtitle,
-                        by:username,
-                        userid:_id,
-                        views: 0,
-                        tags:tagArray
-                })
+        const user = req.user
+        if (user) {
+                try {
+                        const { title, subtitle, tags } = req.body
+                        const { username, _id } = req.user
+                        const tagArray = tags.toLowerCase().split(",", " ")
+                        const newQuestion = new Question({
+                                title,
+                                subtitle,
+                                by: username,
+                                userid: _id,
+                                views: 0,
+                                tags: tagArray
+                        })
 
-                const result = await newQuestion.save()
+                        const result = await newQuestion.save()
 
-                res.redirect("/")
-        } catch (err) {
-                console.log(err);
-                res.send("error")
+                        res.redirect("/")
+                } catch (err) {
+                        console.log(err);
+                        res.send("error")
+                }
+        } else {
+                res.redirect("/users/login")
         }
 }
 
 exports.deleteQuestions = async (req, res) => {
-        try {
-                const id = req.params.id
-                const isDeleted = await QuestionHelper.deleteQuestion(id)
+        const user = req.user
+        if (user) {
+                try {
+                        const id = req.params.id
+                        const isDeleted = await QuestionHelper.deleteQuestion(id)
 
-                if (isDeleted) res.redirect("/")
-                else res.json({ error: "somthing went wrong" })
+                        if (isDeleted) res.redirect("/")        
+                        else res.json({ error: "somthing went wrong" })
 
-        } catch (error) {
-                res.status(500).json("error: " + error)
+                } catch (error) {
+                        res.status(500).json("error: " + error)
+                }
+        } else {
+                res.redirect("/users/login")
         }
 }
 
 exports.searchQuestion = async (req, res) => {
         const searchedTerm = req.query.question
-        const searchedTerms = searchedTerm.split(" ")
+        const searchedTerms = searchedTerm.toLowerCase().split(" ")
 
         console.log("--------", searchedTerms);
         try {
@@ -108,23 +142,29 @@ exports.searchQuestion = async (req, res) => {
 //asnwer
 
 exports.addAnswer = async (req, res) => {
-        try {
-                const { answer } = req.body
-                const quesId = req.params.id
-                console.log(answer, quesId);
-                // const { username, _id } = req.user
-
-                const newAnswer = new Answer({
-                        by: "ovyas24",
-                        userid: "andc1234x",
-                        answer
-                })
-                const ans = await newAnswer.save()
-                console.log(ans);
-                const result = await Question.updateOne({ _id: quesId }, { $push: { answers: ans._id } })
-                res.json(result)
-        } catch (error) {
-                res.status(500).json("error: " + error)
+        const user = req.user
+        if (user) {
+                try {
+                        const { answer } = req.body
+                        const quesId = req.params.id
+                        const { username, _id } = req.user
+                        console.log(answer);
+                        if (answer) {
+                                const newAnswer = new Answer({
+                                        by: username,
+                                        userid: _id,
+                                        answer
+                                })
+                                const ans = await newAnswer.save()
+                                console.log(ans);
+                                const result = await Question.updateOne({ _id: quesId }, { $push: { answers: ans._id } })
+                        }
+                        res.redirect("/questions/" + quesId)
+                } catch (error) {
+                        res.status(500).json("error: " + error)
+                }
+        } else {
+                res.redirect("/users/login")
         }
 }
 
@@ -132,20 +172,51 @@ exports.addAnswer = async (req, res) => {
 exports.addComment = async (req, res) => {
         const { comment } = req.body
         const answerId = req.params.id
-        // const { username, _id } = req.user
-        try {
-                const newComment = new Comment({
-                        by: "ovyas24",
-                        userid: "andc1234x",
-                        comment
-                })
+        const quesId = req.query.quesId
 
-                const comm = await newComment.save()
-                console.log(comm._id);
-                const result = await Answer.updateOne({ _id: answerId }, { $push: { comments: comm._id } })
+        const { username, _id } = req.user
+        const user = req.user
+        if (user) {
+                try {
+                        if (comment) {
+                                const newComment = new Comment({
+                                        by: username,
+                                        userid: _id,
+                                        comment
+                                })
 
-                res.json(result)
-        } catch (error) {
-                res.status(500).json({ err: "internal server error" })
+                                const comm = await newComment.save()
+                                console.log(comm._id);
+                                const result = await Answer.updateOne({ _id: answerId }, { $push: { comments: comm._id } })
+                        }
+
+                        res.redirect("/questions/" + quesId)
+                } catch (error) {
+                        res.status(500).json({ err: "internal server error" })
+                }
+        } else {
+                res.redirect("/users/login")
         }
+}
+
+exports.correctAnswer = async (req, res) => {
+        const user = req.user
+        if (user._id = req.query.userID) {
+                const updateAnswer = await Answer.updateOne({ _id: req.params.id }, { correct: true })
+                const updateQuestion = await Question.updateOne({ _id: req.query.quesID }, { answerd: true })
+
+                res.redirect("/questions/" + req.query.quesID)
+        } else {
+                res.redirect("/users/login")
+        }
+}
+
+exports.delAnswer = async (req,res)=>{
+        const isDeleted = await QuestionHelper.deleteAnswer(req.params.id)
+        res.redirect("/questions/"+req.query.quesId)
+}
+
+exports.delComment = async (req,res)=>{
+        const isDeleted = await QuestionHelper.comment(req.params.id)
+        res.redirect("/questions/"+req.query.quesId)
 }

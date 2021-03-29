@@ -1,0 +1,18 @@
+{{#each questions}}
+<div class="card mb-3">
+    <div class="card-body">
+        <h4 class="card-title"> <a href="/questions/{{_id}}">Que: {{title}}</a></h4>
+        <h6 class="text-text-muted card-subtitle mb-2">{{subtitle}}</h6>
+        <p class="card-text">~ {{by}}|<cite
+                title="Source Title">{{newDate.day}}-{{newDate.month}}-{{newDate.year}}</cite>
+        </p>
+    </div>
+    <div class="card-footer text-muted text-left">
+        Views {{views}} | {{#if this.answerd}} <span class="text-success">Answered</span> {{else}} <span
+            class="text-muted">Not Answered</span>{{/if}}
+        {{#isEqu by ../user.username}}
+        <a href="/questions/delete/{{_id}}" class="btn btn-danger">Delete</a>
+        {{/isEqu}}
+    </div>
+</div>
+{{/each}}
