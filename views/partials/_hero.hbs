@@ -1,42 +1,17 @@
-<div class="px-4 py-5 my-5 text-center" style="background-color:  	#D8D8D8;">
-    <!-- <img class="d-block mx-auto mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
-    <h1 class="display-5 fw-bold">Ask Away</h1>
-    <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4">
-            Find answer to your questions or be answer to someones question
-        </p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            {{#if user}}
-            <button type="button" class="btn btn-primary btn-lg px-4 me-sm-3" data-bs-toggle="modal"
-                data-bs-target="#exampleModal">
-                Ask Question
-            </button>
-            {{else}}
-            <p class="text-info h5">
-                <a href="/users/login" type="button" class="btn btn-outline-primary me-2">Login</a>
-                <br>
-                <br>
-                Please Login To ask Question!
-            </p>
-            {{/if}}
+<section class="highlight-clean" style="background-color: #eee;">
+    <div class="container">
+        <div class="intro">
+            <h2 class="text-center">Ask Away</h2>
+            <p class="text-center">Find your answers!</p>
         </div>
-    </div>
-</div>
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+        {{#if user}}
+        <div class="buttons">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Ask Question</button>
         </div>
+        {{else}}
+        <div class="buttons">
+            <a type="button" class="btn btn-outline-primary" href="/users/login">Please Login to ask Question</a>
+        </div>
+        {{/if}}
     </div>
-</div>
+</section>

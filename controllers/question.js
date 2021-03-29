@@ -27,17 +27,17 @@ exports.allQuestions = async (req, res) => {
 
 exports.singleQuestion = async (req, res) => {
         try {
-                const questions = await Question.findOne({_id:req.params.id})
-                                        .populate({ 
-                                                path: 'answers', 
-                                                model: 'Answer', 
-                                                populate: { 
-                                                        path: 'comments', 
-                                                        model: 'Comment' 
-                                                } 
-                                        })
-                                        .exec()
-                res.json(questions)
+                const question = await Question.findOne({ _id: req.params.id })
+                        .populate({
+                                path: 'answers',
+                                model: 'Answer',
+                                populate: {
+                                        path: 'comments',
+                                        model: 'Comment'
+                                }
+                        })  
+                const updated = await Question.updateOne({_id:question.id},{views:question.views +1})
+                res.render('question', { title: 'Home | '+question.title, question:question, user: req.user })
         } catch (error) {
                 console.log(error);
                 res.status(500).json({ err: "internal server error" })
@@ -46,23 +46,21 @@ exports.singleQuestion = async (req, res) => {
 
 exports.addQuestion = async (req, res) => {
         try {
-                const { title, subtitle, tags } = req.body
-                // const { username, _id } = req.user
-
+                const { title, subtitle, tags } = req.body                              
+                const { username, _id } = req.user
+                const tagArray = tags.split(","," ")
                 const newQuestion = new Question({
                         title,
                         subtitle,
-                        // by:username,
-                        // userid:_id,
-                        by: "ovyas24",
-                        userid: "123xabc",
+                        by:username,
+                        userid:_id,
                         views: 0,
-                        tags
+                        tags:tagArray
                 })
 
                 const result = await newQuestion.save()
 
-                res.json({ result })
+                res.redirect("/")
         } catch (err) {
                 console.log(err);
                 res.send("error")
@@ -74,7 +72,7 @@ exports.deleteQuestions = async (req, res) => {
                 const id = req.params.id
                 const isDeleted = await QuestionHelper.deleteQuestion(id)
 
-                if (isDeleted) res.json({ deleted: isDeleted })
+                if (isDeleted) res.redirect("/")
                 else res.json({ error: "somthing went wrong" })
 
         } catch (error) {
@@ -101,7 +99,7 @@ exports.searchQuestion = async (req, res) => {
                                 filteredQuestion.push({ _id, title, subtitle, by, newDate, answerd, userid, answers, views, tags })
                         }
                 })
-                res.json(filteredQuestion)
+                res.render('search', { title: 'Home | Search', questions: filteredQuestion, user: req.user })
         } catch (error) {
                 res.status(500).json("error: " + error)
         }
